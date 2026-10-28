@@ -1,68 +1,59 @@
 package org.example
 
-class Player {
-    var name: String = ""
-    var field: Array<CharArray> = Array(10) { CharArray(10) { '.' } }
+class Player(val name: String) {
 
-    var shots: Int = 0
-    var hits: Int = 0
-    var shipsLeft: Int = 20 // Задание 1
+    // Задание 4: Приватное поле и геттер field()
+    private val _field: Array<CharArray> = Array(10) { CharArray(10) { '.' } }
 
-    // Задание 2
-    fun isAlive(): Boolean {
-        return shipsLeft > 0
+    fun field(): Array<CharArray> = _field
+
+    // Задание 2: Приватные счетчики и геттеры
+    private var _shots: Int = 0
+    private var _hits: Int = 0
+
+    val shots: Int
+        get() = _shots
+
+    val hits: Int
+        get() = _hits
+
+    // Задание 3: Сеттер registerShot
+    fun registerShot(hit: Boolean) {
+        _shots++
+        if (hit) _hits++
     }
 
-    // Задание 3
+    // Задание 4: Сеттер placeShip с проверкой координат
+    fun placeShip(row: Int, col: Int) {
+        if (row in 0..9 && col in 0..9) {
+            _field[row][col] = '#'
+        }
+    }
+
+    // Задание 6 : Сеттер markShot
+    fun markShot(row: Int, col: Int, hit: Boolean) {
+        if (row in 0..9 && col in 0..9) {
+            _field[row][col] = if (hit) 'X' else 'O'
+        }
+    }
+
     fun accuracy(): Double {
-        if (shots == 0) return 0.0
-        return hits * 100.0 / shots
+        if (_shots == 0) return 0.0
+        return _hits * 100.0 / _shots
     }
 
-    // Задание 4
     fun status(): String {
         val acc = String.format(java.util.Locale.US, "%.1f", accuracy())
-        return "Игрок $name: палуб осталось $shipsLeft, выстрелов $shots, попаданий $hits, точность $acc%"
+        return "Игрок $name: выстрелов $_shots, попаданий $_hits, точность $acc%"
     }
 
-    // Задание 5
-    fun takeDamage(): Boolean {
-        shipsLeft--
-        return shipsLeft > 0
-    }
-
-    // Задание 6
-    fun registerShot(hit: Boolean) {
-        shots++
-        if (hit) {
-            hits++
-        }
-    }
-
-    // Задание 7
     fun reset() {
-        shots = 0
-        hits = 0
-        shipsLeft = 20
-        // Очищаем поле
+        _shots = 0
+        _hits = 0
         for (r in 0..9) {
             for (c in 0..9) {
-                field[r][c] = '.'
+                _field[r][c] = '.'
             }
-        }
-    }
-
-    fun printField() {
-        println("=== Поле игрока $name ===")
-        print("   ")
-        for (c in 0..9) print("$c ")
-        println()
-        for (r in 0..9) {
-            print("$r  ")
-            for (c in 0..9) {
-                print("${field[r][c]} ")
-            }
-            println()
         }
     }
 }
